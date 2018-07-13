@@ -2,6 +2,9 @@ package com.tbrooks.combat;
 
 import com.tbrooks.army.Army;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CombatGrid {
     private final GridTile[][] combatGrid;
     private final int rowLength;
@@ -18,7 +21,7 @@ public class CombatGrid {
     private void initializeCombatGrid(final int row, final int col) {
         for (int rIndex = 0; rIndex < row; rIndex++) {
             for (int cIndex = 0; cIndex < col; cIndex++) {
-                this.combatGrid[rIndex][cIndex] = new GridTile();
+                this.combatGrid[rIndex][cIndex] = new GridTile(rIndex, cIndex);
             }
         }
     }
@@ -33,8 +36,29 @@ public class CombatGrid {
         }
     }
 
-    public GridTile get(final int row, final int col) {
-        return (row < this.rowLength && col < this.colLength) ? this.combatGrid[row][col] : null;
+    public GridTile getTile(final int x, final int y) {
+        return (x < this.rowLength && y < this.colLength) ? this.combatGrid[x][y] : null;
+    }
+
+    public List<GridTile> getSurroundingTiles(final GridTile gridTile) {
+        final List<GridTile> surrounding = new ArrayList<>();
+
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                if (x == 0 && y == 0) {
+                    continue;
+                }
+
+                final int checkX = gridTile.getxPos() + x;
+                final int checkY = gridTile.getyPos() + y;
+
+                if (0 <= checkX && checkX < rowLength && 0 <= checkY && checkY < colLength) {
+                    surrounding.add(combatGrid[checkX][checkY]);
+                }
+            }
+        }
+
+        return surrounding;
     }
 
     public int getRowLength() {
@@ -56,8 +80,11 @@ public class CombatGrid {
                 if (this.combatGrid[r][c].hasCharacter()) {
                     combatGridString.append(this.combatGrid[r][c].getCharacter().getName());
                 }
+                else if (this.combatGrid[r][c].isPath()) {
+                    combatGridString.append(" PATH  ");
+                }
                 else {
-                    combatGridString.append("Empty");
+                    combatGridString.append("       ");
                 }
             }
             combatGridString.append(" |\n");
