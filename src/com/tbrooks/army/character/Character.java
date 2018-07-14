@@ -1,6 +1,9 @@
 package com.tbrooks.army.character;
 
 import com.tbrooks.army.character.archetype.Archetype;
+import com.tbrooks.combat.GridTile;
+
+import java.util.List;
 
 public class Character {
     private String name;
@@ -9,11 +12,13 @@ public class Character {
     private int health;
     private boolean alive;
     private boolean facingLeft;
+    private GridTile gridTile;
+    private List<GridTile> path;
 
     public Character(final String name, final Archetype archetype, final boolean facingLeft) {
         this.name = name;
         this.archetype = archetype;
-        this.healthTotal = 100;
+        this.healthTotal = (int)(100 * archetype.getHealthModifier());
         this.alive = true;
         this.facingLeft = facingLeft;
     }
@@ -65,4 +70,19 @@ public class Character {
         this.facingLeft = !this.facingLeft;
     }
 
+    public GridTile getGridTile() {
+        return gridTile;
+    }
+
+    public void setGridTile(final GridTile gridTile) {
+        this.gridTile = gridTile;
+    }
+
+    public List<GridTile> getPath() {
+        return path;
+    }
+
+    public void setPath(final List<GridTile> path) {
+        this.path = path;
+    }
 }

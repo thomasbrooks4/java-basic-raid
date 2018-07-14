@@ -29,10 +29,12 @@ public class CombatGrid {
     public void initializeArmies(final Army playerArmy, final Army enemyArmy) {
         for (int i = 0; i < playerArmy.getArmySize(); i++) {
             this.combatGrid[i][0].setCharacter(playerArmy.getCharacterAt(i));
+            playerArmy.getCharacterAt(i).setGridTile(this.combatGrid[i][0]);
         }
 
         for (int j = 0; j < enemyArmy.getArmySize(); j++) {
             this.combatGrid[j][this.colLength - 1].setCharacter(enemyArmy.getCharacterAt(j));
+            enemyArmy.getCharacterAt(j).setGridTile(this.combatGrid[j][this.colLength - 1]);
         }
     }
 
@@ -79,9 +81,6 @@ public class CombatGrid {
 
                 if (this.combatGrid[r][c].hasCharacter()) {
                     combatGridString.append(this.combatGrid[r][c].getCharacter().getName());
-                }
-                else if (this.combatGrid[r][c].isPath()) {
-                    combatGridString.append(" PATH  ");
                 }
                 else {
                     combatGridString.append("       ");

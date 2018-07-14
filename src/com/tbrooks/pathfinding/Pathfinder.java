@@ -63,7 +63,6 @@ public class Pathfinder {
         GridTile currentTile = endTile;
 
         while (currentTile != startTile) {
-            currentTile.setPath(true);
             path.add(currentTile);
             currentTile = currentTile.getParent();
         }

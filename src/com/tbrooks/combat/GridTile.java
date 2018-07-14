@@ -9,12 +9,10 @@ public class GridTile implements Comparable<GridTile>{
     private int xPos;
     private int yPos;
     private GridTile parent;
-    private boolean path;
 
     public GridTile(final int xPos, final int yPos) {
         this.xPos = xPos;
         this.yPos = yPos;
-        this.path = false;
     }
 
     public boolean hasCharacter() {
@@ -71,14 +69,6 @@ public class GridTile implements Comparable<GridTile>{
 
     public void setParent(final GridTile parent) {
         this.parent = parent;
-    }
-
-    public boolean isPath() {
-        return path;
-    }
-
-    public void setPath(final boolean path) {
-        this.path = path;
     }
 
     @Override
