@@ -1,29 +1,10 @@
 package com.tbrooks.army.character.archetype;
 
-public abstract class Archetype {
-    Archetypes archetype;
-    int range;
-    double healthModifier;
-    double damageModifier;
-    double speedModifier;
+public enum Archetype {
 
-    public Archetypes getArchetype() {
-        return this.archetype;
-    }
+    PEASANT,
+    WARRIOR,
+    ARCHER,
+    HEAVY
 
-    public int getRange() {
-        return this.range;
-    }
-
-    public double getHealthModifier() {
-        return this.healthModifier;
-    }
-
-    public double getDamageModifier() {
-        return this.damageModifier;
-    }
-
-    public double getSpeedModifier() {
-        return this.speedModifier;
-    }
 }

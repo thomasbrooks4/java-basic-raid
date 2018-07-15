@@ -5,22 +5,49 @@ import com.tbrooks.combat.GridTile;
 
 import java.util.List;
 
-public class Character {
-    private String name;
-    private final Archetype archetype;
-    private final int healthTotal;
-    private int health;
-    private boolean alive;
-    private boolean facingLeft;
-    private GridTile gridTile;
-    private List<GridTile> path;
+public abstract class Character {
 
-    public Character(final String name, final Archetype archetype, final boolean facingLeft) {
-        this.name = name;
+    private final int DEFAULT_HEALTH = 100;
+    private final int DEFAULT_SPEED = 100;
+    private final int DEFAULT_DAMAGE = 30;
+
+    protected Archetype archetype;
+    protected String name;
+    protected final String id = generateId();
+
+    protected int healthTotal;
+    protected int health;
+    protected int range;
+
+    protected double healthModifier;
+    protected double speedModifier;
+    protected double damageModifier;
+
+    protected boolean friendly;
+    protected boolean alive;
+    protected boolean facingRight;
+    protected boolean aimingHigh;
+    protected boolean kneeling;
+    protected boolean rangedEquipped;
+    protected boolean retreating;
+
+    protected GridTile gridTile;
+    protected List<GridTile> path;
+
+    protected void initCharacter(final Archetype archetype, final String name, final boolean friendly, final boolean rangedEquipped) {
         this.archetype = archetype;
-        this.healthTotal = (int)(100 * archetype.getHealthModifier());
+        this.name = name;
+
+        this.healthTotal = (int)(DEFAULT_HEALTH * this.healthModifier);
+        this.health = this.healthTotal;
+
+        this.friendly = friendly;
         this.alive = true;
-        this.facingLeft = facingLeft;
+        this.facingRight = friendly;
+        this.aimingHigh = false;
+        this.kneeling = false;
+        this.rangedEquipped = rangedEquipped;
+        this.retreating = false;
     }
 
     public String getName() {
@@ -31,8 +58,18 @@ public class Character {
         this.name = name;
     }
 
-    public Archetype getArchetype() {
-        return archetype;
+    private String generateId() {
+        StringBuilder id = new StringBuilder();
+        String possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (var i = 0; i < 5; i++)
+            id.append(possible.charAt((int)Math.floor(Math.random() * possible.length())));
+
+        return id.toString();
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     public int getHealth() {
@@ -58,20 +95,86 @@ public class Character {
         }
     }
 
+    public int getSpeed() {
+        return (int)(DEFAULT_SPEED * this.speedModifier);
+    }
+
+    public int getDamage() {
+        return (int)(DEFAULT_DAMAGE * this.damageModifier);
+    }
+
+    public int getRange() {
+        return this.range;
+    }
+
+    public double getHealthModifier() {
+        return this.healthModifier;
+    }
+
+    public double getSpeedModifier() {
+        return this.speedModifier;
+    }
+
+    public double getDamageModifier() {
+        return this.damageModifier;
+    }
+
+    public boolean isFriendly() {
+        return this.friendly;
+    }
+
+    public void changeFriendly(final boolean friendly) {
+        this.friendly = friendly;
+    }
+
     public boolean isAlive() {
         return this.alive;
     }
 
-    public boolean isFacingLeft() {
-        return this.facingLeft;
+    public boolean isFacingRight() {
+        return this.facingRight;
     }
 
     public void turnAround() {
-        this.facingLeft = !this.facingLeft;
+        this.facingRight = !this.facingRight;
+    }
+
+    public boolean isAimingHigh() {
+        return this.aimingHigh;
+    }
+
+    public void changeAimingStance() {
+        this.aimingHigh = !this.aimingHigh;
+    }
+
+    public boolean isKneeling() {
+        return this.kneeling;
+    }
+
+    public void changeKneelingStance() {
+        this.kneeling = !this.kneeling;
+    }
+
+    public Archetype getArchetype() {
+        return this.archetype;
+    }
+
+    public boolean isRangedEquipped() {
+        return this.rangedEquipped;
+    }
+
+    public abstract void changeRangedEquipped();
+
+    public boolean isRetreating() {
+        return this.retreating;
+    }
+
+    public void changeRetreating() {
+        this.retreating = !this.retreating;
     }
 
     public GridTile getGridTile() {
-        return gridTile;
+        return this.gridTile;
     }
 
     public void setGridTile(final GridTile gridTile) {
@@ -79,7 +182,7 @@ public class Character {
     }
 
     public List<GridTile> getPath() {
-        return path;
+        return this.path;
     }
 
     public void setPath(final List<GridTile> path) {

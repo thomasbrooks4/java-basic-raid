@@ -1,12 +1,22 @@
 package com.tbrooks.army.character.archetype;
 
-public class Heavy extends Archetype {
+import com.tbrooks.army.character.Character;
 
-    public Heavy() {
-        this.archetype = Archetypes.HEAVY;
-        this.range = 2;
+public class Heavy extends Character {
+
+    private final int MELEE_RANGE = 2;
+
+    public Heavy(final String name, final boolean friendly) {
         this.healthModifier = 1.5;
         this.damageModifier = 1.3;
-        this.speedModifier = 0.75;
+        this.speedModifier = 0.7;
+
+        initCharacter(Archetype.HEAVY, name, friendly, false);
+
+        this.range = MELEE_RANGE;
+    }
+
+    public void changeRangedEquipped() {
+        // Heavy does not have ranged
     }
 }
