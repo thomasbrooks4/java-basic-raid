@@ -1,8 +1,8 @@
-package com.tbrooks.army.character.archetype;
+package com.tbrooks.army.unit.archetype;
 
-import com.tbrooks.army.character.Character;
+import com.tbrooks.army.unit.Unit;
 
-public class Peasant extends Character {
+public class Peasant extends Unit {
 
     private final int MELEE_RANGE = 2;
     private final int RANGED_RANGE = 3;
@@ -12,7 +12,7 @@ public class Peasant extends Character {
         this.damageModifier = 0.9;
         this.speedModifier = 1.0;
 
-        initCharacter(Archetype.PEASANT, name, friendly, false);
+        initUnit(Archetype.PEASANT, name, friendly, false);
 
         this.range = MELEE_RANGE;
     }

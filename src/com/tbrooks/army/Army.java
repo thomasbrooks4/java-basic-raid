@@ -1,6 +1,6 @@
 package com.tbrooks.army;
 
-import com.tbrooks.army.character.Character;
+import com.tbrooks.army.unit.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 public class Army {
 
     private final boolean friendly;
-    private final List<Character> army;
+    private final List<Unit> army;
     private int armySize;
 
     public Army(final boolean friendly) {
@@ -20,7 +20,7 @@ public class Army {
         return this.friendly;
     }
 
-    public List<Character> getArmy() {
+    public List<Unit> getArmy() {
         return this.army;
     }
 
@@ -28,16 +28,16 @@ public class Army {
         return this.army.size();
     }
 
-    public Character getCharacterAt(final int index) {
+    public Unit getCharacterAt(final int index) {
         return this.army.get(index);
     }
 
-    public void addCharacter(final Character character) {
-        this.army.add(character);
+    public void addCharacter(final Unit unit) {
+        this.army.add(unit);
     }
 
-    public void removeCharacter(final Character character) {
-        this.army.remove(character);
+    public void removeCharacter(final Unit unit) {
+        this.army.remove(unit);
     }
 
 }

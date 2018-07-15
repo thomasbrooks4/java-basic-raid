@@ -1,8 +1,8 @@
-package com.tbrooks.army.character.archetype;
+package com.tbrooks.army.unit.archetype;
 
-import com.tbrooks.army.character.Character;
+import com.tbrooks.army.unit.Unit;
 
-public class Archer extends Character {
+public class Archer extends Unit {
 
     private final int MELEE_RANGE = 1;
     private final int RANGED_RANGE = 4;
@@ -14,7 +14,7 @@ public class Archer extends Character {
         this.damageModifier = 1.1;
         this.speedModifier = 1.1;
 
-        initCharacter(Archetype.ARCHER, name, friendly, true);
+        initUnit(Archetype.ARCHER, name, friendly, true);
 
         this.range = RANGED_RANGE;
         this.bowDrawn = false;

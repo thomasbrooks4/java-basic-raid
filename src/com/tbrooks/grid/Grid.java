@@ -1,16 +1,16 @@
-package com.tbrooks.combat;
+package com.tbrooks.grid;
 
 import com.tbrooks.army.Army;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CombatGrid {
+public class Grid {
     private final GridTile[][] combatGrid;
     private final int rowLength;
     private final int colLength;
 
-    public CombatGrid(final int row, final int col) {
+    public Grid(final int row, final int col) {
         this.combatGrid = new GridTile[row][col];
         this.rowLength = row;
         this.colLength = col;
@@ -28,12 +28,12 @@ public class CombatGrid {
 
     public void initializeArmies(final Army playerArmy, final Army enemyArmy) {
         for (int i = 0; i < playerArmy.getArmySize(); i++) {
-            this.combatGrid[i][0].setCharacter(playerArmy.getCharacterAt(i));
+            this.combatGrid[i][0].setUnit(playerArmy.getCharacterAt(i));
             playerArmy.getCharacterAt(i).setGridTile(this.combatGrid[i][0]);
         }
 
         for (int j = 0; j < enemyArmy.getArmySize(); j++) {
-            this.combatGrid[j][this.colLength - 1].setCharacter(enemyArmy.getCharacterAt(j));
+            this.combatGrid[j][this.colLength - 1].setUnit(enemyArmy.getCharacterAt(j));
             enemyArmy.getCharacterAt(j).setGridTile(this.combatGrid[j][this.colLength - 1]);
         }
     }
@@ -80,7 +80,7 @@ public class CombatGrid {
                 combatGridString.append(" | ");
 
                 if (this.combatGrid[r][c].hasCharacter()) {
-                    combatGridString.append(this.combatGrid[r][c].getCharacter().getName());
+                    combatGridString.append(this.combatGrid[r][c].getUnit().getName());
                 }
                 else {
                     combatGridString.append("       ");

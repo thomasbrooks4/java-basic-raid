@@ -1,11 +1,11 @@
 package com.tbrooks;
 
 import com.tbrooks.army.Army;
-import com.tbrooks.army.character.archetype.Archer;
-import com.tbrooks.army.character.archetype.Heavy;
-import com.tbrooks.army.character.archetype.Peasant;
-import com.tbrooks.army.character.archetype.Warrior;
-import com.tbrooks.combat.CombatGrid;
+import com.tbrooks.army.unit.archetype.Archer;
+import com.tbrooks.army.unit.archetype.Heavy;
+import com.tbrooks.army.unit.archetype.Peasant;
+import com.tbrooks.army.unit.archetype.Warrior;
+import com.tbrooks.grid.Grid;
 import com.tbrooks.pathfinding.Pathfinder;
 
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.awt.*;
 public class Main {
 
     public static void main(final String[] args) {
-        final CombatGrid combatGrid = new CombatGrid(6, 12);
+        final Grid grid = new Grid(6, 12);
 
         Archer thomas = new Archer("Thomas", true);
         Warrior brianna = new Warrior("Brianna", true);
@@ -33,11 +33,10 @@ public class Main {
         enemyArmy.addCharacter(dan);
         enemyArmy.addCharacter(nam);
 
-        combatGrid.initializeArmies(playerArmy, enemyArmy);
-        final Pathfinder pathfinder = new Pathfinder(combatGrid);
-        pathfinder.findPath(new Point(0, 0), new Point(3, 11));
+        grid.initializeArmies(playerArmy, enemyArmy);
+        final Pathfinder pathfinder = new Pathfinder(grid);
 
-        System.out.println(combatGrid);
+        System.out.println(grid);
 
     }
 }

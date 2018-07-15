@@ -1,4 +1,4 @@
-package com.tbrooks.army.character.archetype;
+package com.tbrooks.army.unit.archetype;
 
 public enum Archetype {
 

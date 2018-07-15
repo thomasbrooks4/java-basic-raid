@@ -1,11 +1,12 @@
-package com.tbrooks.army.character;
+package com.tbrooks.army.unit;
 
-import com.tbrooks.army.character.archetype.Archetype;
-import com.tbrooks.combat.GridTile;
+import com.tbrooks.army.unit.archetype.Archetype;
+import com.tbrooks.grid.GridTile;
+import com.tbrooks.pathfinding.Pathfinder;
 
 import java.util.List;
 
-public abstract class Character {
+public abstract class Unit {
 
     private final int DEFAULT_HEALTH = 100;
     private final int DEFAULT_SPEED = 100;
@@ -23,6 +24,7 @@ public abstract class Character {
     protected double speedModifier;
     protected double damageModifier;
 
+    protected boolean selected;
     protected boolean friendly;
     protected boolean alive;
     protected boolean facingRight;
@@ -30,11 +32,14 @@ public abstract class Character {
     protected boolean kneeling;
     protected boolean rangedEquipped;
     protected boolean retreating;
+    protected boolean moving;
+    protected boolean attacking;
 
+    protected Pathfinder pathfinder;
     protected GridTile gridTile;
     protected List<GridTile> path;
 
-    protected void initCharacter(final Archetype archetype, final String name, final boolean friendly, final boolean rangedEquipped) {
+    protected void initUnit(final Archetype archetype, final String name, final boolean friendly, final boolean rangedEquipped) {
         this.archetype = archetype;
         this.name = name;
 
@@ -48,6 +53,11 @@ public abstract class Character {
         this.kneeling = false;
         this.rangedEquipped = rangedEquipped;
         this.retreating = false;
+    }
+
+    // Unique Identifiers
+    public Archetype getArchetype() {
+        return this.archetype;
     }
 
     public String getName() {
@@ -72,6 +82,7 @@ public abstract class Character {
         return this.id;
     }
 
+    // Stats
     public int getHealth() {
         return this.health;
     }
@@ -107,6 +118,7 @@ public abstract class Character {
         return this.range;
     }
 
+    // Archetype modifiers
     public double getHealthModifier() {
         return this.healthModifier;
     }
@@ -117,6 +129,15 @@ public abstract class Character {
 
     public double getDamageModifier() {
         return this.damageModifier;
+    }
+
+    // Logic Booleans
+    public boolean isSelected() {
+        return this.selected;
+    }
+
+    public void changeSelected() {
+        this.selected = !this.selected;
     }
 
     public boolean isFriendly() {
@@ -155,10 +176,6 @@ public abstract class Character {
         this.kneeling = !this.kneeling;
     }
 
-    public Archetype getArchetype() {
-        return this.archetype;
-    }
-
     public boolean isRangedEquipped() {
         return this.rangedEquipped;
     }
@@ -173,6 +190,31 @@ public abstract class Character {
         this.retreating = !this.retreating;
     }
 
+    public boolean isMoving() {
+        return this.moving;
+    }
+
+    protected void startMoving() {
+        this.moving = true;
+    }
+
+    protected void stopMoving() {
+        this.moving = false;
+    }
+
+    public boolean isAttacking() {
+        return this.attacking;
+    }
+
+    protected void startAttacking() {
+        this.attacking = true;
+    }
+
+    protected void stopAttacking() {
+        this.attacking = false;
+    }
+
+    // Pathfinding
     public GridTile getGridTile() {
         return this.gridTile;
     }
@@ -181,11 +223,38 @@ public abstract class Character {
         this.gridTile = gridTile;
     }
 
-    public List<GridTile> getPath() {
-        return this.path;
+    // Combat methods
+    public void move(final GridTile targetTile) {
+        this.path = pathfinder.findPath(this.gridTile, targetTile);
+
+        if (path.size() == 0 || this.gridTile.equals(targetTile)) {
+            stopMoving();
+        }
+        else {
+            startMoving();
+
+            // TODO: Move towards next tile in path
+        }
     }
 
-    public void setPath(final List<GridTile> path) {
-        this.path = path;
+    public void attack(final Unit target) {
+        if (target.isAlive()) {
+            startAttacking();
+            target.decreaseHealth(getDamage());
+        }
+        else {
+            stopAttacking();
+        }
+    }
+
+    public void moveAndAttack(final Unit target) {
+        GridTile targetTile = target.getGridTile();
+
+        if (Math.abs(this.gridTile.getxPos() - targetTile.getxPos()) > this.range) {
+            move(targetTile);
+        }
+        else {
+            attack(target);
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.tbrooks.pathfinding;
 
-import com.tbrooks.combat.CombatGrid;
-import com.tbrooks.combat.GridTile;
+import com.tbrooks.grid.Grid;
+import com.tbrooks.grid.GridTile;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -12,17 +12,14 @@ import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Pathfinder {
-    private final CombatGrid combatGrid;
+    private Grid grid;
 
-    public Pathfinder(final CombatGrid combatGrid) {
-        this.combatGrid = combatGrid;
+    public void setGrid(Grid grid) {
+        this.grid = grid;
     }
 
-    public List<GridTile> findPath (final Point startPoint, final Point endPoint) {
-        final GridTile startTile = combatGrid.getTile(startPoint.x, startPoint.y);
-        final GridTile endTile = combatGrid.getTile(endPoint.x, endPoint.y);
-
-        final int queueSize = combatGrid.getRowLength() * combatGrid.getColLength();
+    public List<GridTile> findPath (final GridTile startTile, final GridTile endTile) {
+        final int queueSize = grid.getRowLength() * grid.getColLength();
         final PriorityQueue<GridTile> openQueue = new PriorityQueue<>(queueSize);
         final Set<GridTile> closedList = new HashSet<>();
 
@@ -36,7 +33,7 @@ public class Pathfinder {
                 return createPath(startTile, endTile);
             }
 
-            final List<GridTile> surroundingTiles = combatGrid.getSurroundingTiles(currentTile);
+            final List<GridTile> surroundingTiles = grid.getSurroundingTiles(currentTile);
             for (final GridTile surroundingTile : surroundingTiles) {
                 if (surroundingTile.hasCharacter() || closedList.contains(surroundingTile)) {
                     continue;

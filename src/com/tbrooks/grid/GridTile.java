@@ -1,9 +1,9 @@
-package com.tbrooks.combat;
+package com.tbrooks.grid;
 
-import com.tbrooks.army.character.Character;
+import com.tbrooks.army.unit.Unit;
 
 public class GridTile implements Comparable<GridTile>{
-    private Character character;
+    private Unit unit;
     private int gCost;
     private int hCost;
     private int xPos;
@@ -16,15 +16,15 @@ public class GridTile implements Comparable<GridTile>{
     }
 
     public boolean hasCharacter() {
-        return this.character != null;
+        return this.unit != null;
     }
 
-    public Character getCharacter() {
-        return this.character;
+    public Unit getUnit() {
+        return this.unit;
     }
 
-    public void setCharacter(final Character character) {
-        this.character = character;
+    public void setUnit(final Unit unit) {
+        this.unit = unit;
     }
 
     public int getgCost() {
