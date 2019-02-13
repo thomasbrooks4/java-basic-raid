@@ -1,12 +1,12 @@
-package com.tbrooks.army.unit;
+package com.tbrooks.clan.clansmen;
 
-import com.tbrooks.army.unit.archetype.Archetype;
-import com.tbrooks.grid.GridTile;
+import com.tbrooks.clan.clansmen.archetype.Archetype;
+import com.tbrooks.grid.Tile;
 import com.tbrooks.pathfinding.Pathfinder;
 
 import java.util.List;
 
-public abstract class Unit {
+public abstract class Clansmen {
 
     private final int DEFAULT_HEALTH = 100;
     private final int DEFAULT_SPEED = 100;
@@ -36,10 +36,14 @@ public abstract class Unit {
     protected boolean attacking;
 
     protected Pathfinder pathfinder;
-    protected GridTile gridTile;
-    protected List<GridTile> path;
+    protected Tile tile;
+    protected List<Tile> path;
 
-    protected void initUnit(final Archetype archetype, final String name, final boolean friendly, final boolean rangedEquipped) {
+    protected void initClansmen(
+            final Archetype archetype,
+            final String name,
+            final boolean friendly,
+            final boolean rangedEquipped) {
         this.archetype = archetype;
         this.name = name;
 
@@ -215,19 +219,19 @@ public abstract class Unit {
     }
 
     // Pathfinding
-    public GridTile getGridTile() {
-        return this.gridTile;
+    public Tile getTile() {
+        return this.tile;
     }
 
-    public void setGridTile(final GridTile gridTile) {
-        this.gridTile = gridTile;
+    public void setTile(final Tile tile) {
+        this.tile = tile;
     }
 
     // Combat methods
-    public void move(final GridTile targetTile) {
-        this.path = pathfinder.findPath(this.gridTile, targetTile);
+    public void move(final Tile targetTile) {
+        this.path = pathfinder.findPath(this.tile, targetTile);
 
-        if (path.size() == 0 || this.gridTile.equals(targetTile)) {
+        if (path.size() == 0 || this.tile.equals(targetTile)) {
             stopMoving();
         }
         else {
@@ -237,7 +241,7 @@ public abstract class Unit {
         }
     }
 
-    public void attack(final Unit target) {
+    public void attack(final Clansmen target) {
         if (target.isAlive()) {
             startAttacking();
             target.decreaseHealth(getDamage());
@@ -247,10 +251,10 @@ public abstract class Unit {
         }
     }
 
-    public void moveAndAttack(final Unit target) {
-        GridTile targetTile = target.getGridTile();
+    public void moveAndAttack(final Clansmen target) {
+        Tile targetTile = target.getTile();
 
-        if (Math.abs(this.gridTile.getxPos() - targetTile.getxPos()) > this.range) {
+        if (Math.abs(this.tile.getX() - targetTile.getX()) > this.range) {
             move(targetTile);
         }
         else {

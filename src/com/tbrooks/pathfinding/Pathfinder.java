@@ -1,52 +1,62 @@
 package com.tbrooks.pathfinding;
 
-import com.tbrooks.grid.Grid;
-import com.tbrooks.grid.GridTile;
+import com.tbrooks.grid.CombatGrid;
+import com.tbrooks.grid.Tile;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Pathfinder {
-    private Grid grid;
 
-    public void setGrid(Grid grid) {
-        this.grid = grid;
+    private final static int MOVE_COST_DIAGONAL = 14;
+    private final static int MOVE_COST_STRAIGHT = 10;
+
+    private final CombatGrid combatGrid;
+
+    public Pathfinder(final CombatGrid combatGrid) {
+        this.combatGrid = combatGrid;
     }
 
-    public List<GridTile> findPath (final GridTile startTile, final GridTile endTile) {
-        final int queueSize = grid.getRowLength() * grid.getColLength();
-        final PriorityQueue<GridTile> openQueue = new PriorityQueue<>(queueSize);
-        final Set<GridTile> closedList = new HashSet<>();
+    public List<Tile> findPath (final Tile startTile, final Tile endTile) {
+        final int queueSize = combatGrid.getRowLength() * combatGrid.getColLength();
+        final PriorityQueue<Tile> openTiles = new PriorityQueue<>(queueSize, Comparator.comparingInt(Tile::getfCost));
+        final Set<Tile> searchedTiles = new HashSet<>();
 
-        openQueue.add(startTile);
+        startTile.setG(0);
+        startTile.setH(getH(startTile, endTile));
 
-        while (openQueue.size() > 0) {
-            final GridTile currentTile = openQueue.remove();
-            closedList.add(currentTile);
+        openTiles.add(startTile);
 
-            if (currentTile.equals(endTile)) {
+        while (openTiles.size() > 0) {
+            final Tile activeTile = openTiles.remove();
+            searchedTiles.add(activeTile);
+
+            final List<Tile> surroundingTiles = combatGrid.getSurroundingTiles(activeTile);
+
+            if (surroundingTiles.contains(endTile)) {
+                endTile.setParent(activeTile);
+
                 return createPath(startTile, endTile);
             }
 
-            final List<GridTile> surroundingTiles = grid.getSurroundingTiles(currentTile);
-            for (final GridTile surroundingTile : surroundingTiles) {
-                if (surroundingTile.hasCharacter() || closedList.contains(surroundingTile)) {
+            for (final Tile surroundingTile : surroundingTiles) {
+                if (surroundingTile.hasCharacter() || searchedTiles.contains(surroundingTile)) {
                     continue;
                 }
 
-                final int moveCost = currentTile.getgCost() + getDistance(currentTile, surroundingTile);
-                if (moveCost < surroundingTile.getgCost() || !openQueue.contains(surroundingTile)) {
-                    surroundingTile.setgCost(moveCost);
-                    surroundingTile.sethCost(getDistance(surroundingTile, endTile));
-                    surroundingTile.setParent(currentTile);
+                final int gCost = activeTile.getG() + getMoveCost(activeTile, surroundingTile);
+                if (gCost < surroundingTile.getG() || !openTiles.contains(surroundingTile)) {
+                    surroundingTile.setParent(activeTile);
+                    surroundingTile.setG(gCost);
+                    surroundingTile.setH(getH(surroundingTile, endTile));
 
-                    if (!openQueue.contains(surroundingTile)) {
-                        openQueue.add(surroundingTile);
+                    if (!openTiles.contains(surroundingTile)) {
+                        openTiles.add(surroundingTile);
                     }
                 }
             }
@@ -55,11 +65,11 @@ public class Pathfinder {
         return null;
     }
 
-    private List<GridTile> createPath(final GridTile startTile, final GridTile endTile) {
-        final List<GridTile> path = new ArrayList<>();
-        GridTile currentTile = endTile;
+    private List<Tile> createPath(final Tile startTile, final Tile endTile) {
+        final List<Tile> path = new ArrayList<>();
+        Tile currentTile = endTile;
 
-        while (currentTile != startTile) {
+        while (!currentTile.equals(startTile)) {
             path.add(currentTile);
             currentTile = currentTile.getParent();
         }
@@ -68,11 +78,14 @@ public class Pathfinder {
         return path;
     }
 
-    private int getDistance(final GridTile startTile, final GridTile endTile) {
-        final int distanceX = Math.abs(startTile.getxPos() - endTile.getxPos());
-        final int distanceY = Math.abs(startTile.getyPos() - endTile.getyPos());
+    private int getH(final Tile startTile, final Tile endTile) {
+        return Math.abs(endTile.getX() - startTile.getX()) + Math.abs(endTile.getY() - startTile.getY());
+    }
 
-        return (distanceX > distanceY) ? 14 * distanceY + 10 * (distanceX - distanceY)
-                : 14 * distanceX + 10 * (distanceY - distanceX);
+    private int getMoveCost(final Tile startTile, final Tile endTile) {
+        final int distanceX = Math.abs(endTile.getX() - startTile.getX());
+        final int distanceY = Math.abs(endTile.getY() - startTile.getY());
+
+        return (distanceX == distanceY) ? MOVE_COST_DIAGONAL : MOVE_COST_STRAIGHT;
     }
 }

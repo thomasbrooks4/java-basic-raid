@@ -1,8 +1,8 @@
-package com.tbrooks.army.unit.archetype;
+package com.tbrooks.clan.clansmen.archetype;
 
-import com.tbrooks.army.unit.Unit;
+import com.tbrooks.clan.clansmen.Clansmen;
 
-public class Warrior extends Unit {
+public class Warrior extends Clansmen {
 
     private final int MELEE_RANGE = 1;
     private final int RANGED_RANGE = 2;
@@ -15,7 +15,7 @@ public class Warrior extends Unit {
         this.damageModifier = 1.2;
         this.speedModifier = 0.9;
 
-        initUnit(Archetype.WARRIOR, name, friendly, false);
+        initClansmen(Archetype.WARRIOR, name, friendly, false);
 
         this.range = MELEE_RANGE;
         this.shieldUp = false;

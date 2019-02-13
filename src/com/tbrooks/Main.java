@@ -1,42 +1,50 @@
 package com.tbrooks;
 
-import com.tbrooks.army.Army;
-import com.tbrooks.army.unit.archetype.Archer;
-import com.tbrooks.army.unit.archetype.Heavy;
-import com.tbrooks.army.unit.archetype.Peasant;
-import com.tbrooks.army.unit.archetype.Warrior;
-import com.tbrooks.grid.Grid;
+import com.tbrooks.clan.Clan;
+import com.tbrooks.clan.clansmen.archetype.Archer;
+import com.tbrooks.clan.clansmen.archetype.Heavy;
+import com.tbrooks.clan.clansmen.archetype.Peasant;
+import com.tbrooks.clan.clansmen.archetype.Warrior;
+import com.tbrooks.grid.CombatGrid;
+import com.tbrooks.grid.Tile;
 import com.tbrooks.pathfinding.Pathfinder;
 
-import java.awt.*;
+import java.util.List;
 
 public class Main {
 
     public static void main(final String[] args) {
-        final Grid grid = new Grid(6, 12);
+        final CombatGrid combatGrid = new CombatGrid(6, 12);
 
-        Archer thomas = new Archer("Thomas", true);
-        Warrior brianna = new Warrior("Brianna", true);
-        Peasant kyle = new Peasant("Kyle", true);
+        Archer thomas = new Archer("T", true);
+        Warrior brianna = new Warrior("B", true);
+        Peasant kyle = new Peasant("K", true);
 
-        Heavy robbie = new Heavy("Robbie", false);
-        Peasant dan = new Peasant("Dan", false);
-        Warrior nam = new Warrior("Nam", false);
+        Heavy robbie = new Heavy("R", false);
+        Peasant dan = new Peasant("D", false);
+        Warrior nam = new Warrior("N", false);
 
-        final Army playerArmy = new Army(true);
-        playerArmy.addCharacter(thomas);
-        playerArmy.addCharacter(brianna);
-        playerArmy.addCharacter(kyle);
+        final Clan playerClan = new Clan(true);
+        playerClan.addUnit(thomas);
+        playerClan.addUnit(brianna);
+        playerClan.addUnit(kyle);
 
-        final Army enemyArmy = new Army(false);
-        enemyArmy.addCharacter(robbie);
-        enemyArmy.addCharacter(dan);
-        enemyArmy.addCharacter(nam);
+        final Clan enemyClan = new Clan(false);
+        enemyClan.addUnit(robbie);
+        enemyClan.addUnit(dan);
+        enemyClan.addUnit(nam);
 
-        grid.initializeArmies(playerArmy, enemyArmy);
-        final Pathfinder pathfinder = new Pathfinder(grid);
+        combatGrid.initializeClans(playerClan, enemyClan);
+        final Pathfinder pathfinder = new Pathfinder(combatGrid);
 
-        System.out.println(grid);
+        System.out.println(combatGrid);
 
+        final List<Tile> TtoN = pathfinder.findPath(thomas.getTile(), nam.getTile());
+
+        for (final Tile tile : TtoN) {
+            combatGrid.getTile(tile).setClansmen(new Warrior("P", true));
+        }
+
+        System.out.println(combatGrid);
     }
 }

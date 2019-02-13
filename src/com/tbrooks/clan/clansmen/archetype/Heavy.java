@@ -1,8 +1,8 @@
-package com.tbrooks.army.unit.archetype;
+package com.tbrooks.clan.clansmen.archetype;
 
-import com.tbrooks.army.unit.Unit;
+import com.tbrooks.clan.clansmen.Clansmen;
 
-public class Heavy extends Unit {
+public class Heavy extends Clansmen {
 
     private final int MELEE_RANGE = 2;
 
@@ -11,7 +11,7 @@ public class Heavy extends Unit {
         this.damageModifier = 1.3;
         this.speedModifier = 0.7;
 
-        initUnit(Archetype.HEAVY, name, friendly, false);
+        initClansmen(Archetype.HEAVY, name, friendly, false);
 
         this.range = MELEE_RANGE;
     }
